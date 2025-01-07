@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New Food Item</title>
+</head>
+<body>
+    <h1>Add New Food Item</h1>
+    <form action="/users/<%= user._id %>/foods" method="POST">
+        <label for="name">Food Name:</label>
+        <input type="text" id="name" name="name" required>
+        
+        <button type="submit">Add Food</button>
+    </form>
+</body>
+</html>

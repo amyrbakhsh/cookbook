@@ -7,7 +7,17 @@ const methodOverride = require('method-override');
 const morgan = require('morgan');
 const session = require('express-session');
 
+
+
 const authController = require('./controllers/auth.js');
+
+//Import the foods controller in server.js.
+const foodsController = require('./controllers/foods.js');
+
+//Import and include both middleware functions above all of the routes and controllers in server.js..
+const isSignedIn = require('./middleware/is-signed-in.js');
+const passUserToView = require('./middleware/pass-user-to-view.js');
+
 
 const port = process.env.PORT ? process.env.PORT : '3000';
 
@@ -34,6 +44,12 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/new', (req, res) => {
+  res.render('new.ejs', {
+    user: req.session.user,
+  });
+});
+
 app.get('/vip-lounge', (req, res) => {
   if (req.session.user) {
     res.send(`Welcome to the party ${req.session.user.username}.`);
@@ -42,7 +58,17 @@ app.get('/vip-lounge', (req, res) => {
   }
 });
 
+
+
+
+app.use(passUserToView);
 app.use('/auth', authController);
+app.use(isSignedIn);
+//Use middleware to direct incoming requests to /users/:userId/foods to the foods controller.
+app.use('/users/:userId/foods', foodsController);
+
+
+
 
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);
